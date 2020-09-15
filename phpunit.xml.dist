@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit colors="true" bootstrap="vendor/autoload.php">
+    <testsuites>
+        <testsuite name="Composer File Cleaner Plugin">
+            <directory>./tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <!--filter>
+        <whitelist>
+            <directory suffix=".php">.</directory>
+            <exclude>
+                <directory>Resources</directory>
+                <directory>Tests</directory>
+                <directory>Entity</directory>
+                <directory>vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter-->
+</phpunit>
