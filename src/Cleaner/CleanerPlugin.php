@@ -5,10 +5,11 @@ namespace Babymarkt\Composer\Cleaner;
 use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Plugin\Capability\CommandProvider;
+use Composer\Plugin\Capable;
 use Composer\Plugin\PluginInterface;
 use Composer\Util\Filesystem;
 
-class CleanerPlugin implements PluginInterface, CommandProvider
+class CleanerPlugin implements PluginInterface, CommandProvider, Capable
 {
     /**
      * @var Cleaner
@@ -99,5 +100,12 @@ class CleanerPlugin implements PluginInterface, CommandProvider
         $cleanerCommand->setCleaner($this->cleaner);
 
         return array($cleanerCommand);
+    }
+
+    public function getCapabilities()
+    {
+        return array(
+            CommandProvider::class => CleanerPlugin::class
+        );
     }
 }
