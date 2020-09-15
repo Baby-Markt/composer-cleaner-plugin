@@ -1,8 +1,9 @@
 <?php
+namespace Cleaner;
 
 use Babymarkt\Composer\Cleaner\Cleaner;
 
-class CleanerTest extends PHPUnit_Framework_TestCase
+class CleanerTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -12,7 +13,7 @@ class CleanerTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        /** @var PHPUnit_Framework_MockObject_MockObject|\Composer\Util\Filesystem $fileSystem */
+        /** @var \PHPUnit_Framework_MockObject_MockObject|\Composer\Util\Filesystem $fileSystem */
         $fileSystem = $this->getMockBuilder(\Composer\Util\Filesystem::class)
             ->disableOriginalConstructor()
             ->getMock();

@@ -25,30 +25,62 @@ class CleanerPlugin implements PluginInterface, CommandProvider
      */
     protected $io;
 
-    protected static $defaultConfig = [
-        'clean' => [
-            'default' => []
-        ]
-    ];
+    protected static $defaultConfig = array(
+        'cleaner' => array(
+            'default' => array(
+                // Default pattern to clean up.
+                'pattern' => array(
+                    'README*',
+                    'CHANGELOG*',
+                    'FAQ*',
+                    'CONTRIBUTING*',
+                    'HISTORY*',
+                    'UPGRADING*',
+                    'UPGRADE*',
+                    'package*',
+                    'demo',
+                    'example',
+                    'examples',
+                    'doc',
+                    'docs',
+                    'readme*',
+                    'changelog*',
+                    'composer*',
+                    '.travis.yml',
+                    '.scrutinizer.yml',
+                    'phpcs.xml*',
+                    'phpcs.php',
+                    'phpunit.xml*',
+                    'phpunit.php',
+                    'test',
+                    'tests',
+                    'Tests',
+                    'travis',
+                    'patchwork.json'
+                ),
+                // Pattern to be excluded from clean up
+                "exclude" => array(
 
-    public static function clean(Event $event)
-    {
-        $config = array_replace_recursive(
-            self::$defaultConfig,
-            $event->getComposer()->getPackage()->getExtra()
-        );
-
-        $cleaner = new Cleaner(new Filesystem(), $config['clean']);
-
-        $args = $event->getArguments();
-
-        $cleaner->run(getcwd(), isset($args[0]) ? $args[0] : 'default');
-    }
+                )
+            )
+        )
+    );
 
     public function activate(Composer $composer, IOInterface $io)
     {
         $this->composer = $composer;
         $this->io       = $io;
+        $this->cleaner  = $this->createCleanerInstance();
+    }
+
+    protected function createCleanerInstance()
+    {
+        $config = array_replace_recursive(
+            self::$defaultConfig,
+            $this->composer->getPackage()->getExtra()
+        );
+
+        return new Cleaner(new Filesystem(), $config['cleaner']);
     }
 
     public function deactivate(Composer $composer, IOInterface $io)
