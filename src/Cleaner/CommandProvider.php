@@ -1,17 +1,18 @@
 <?php
 
+
 namespace Babymarkt\Composer\Cleaner;
 
-use Cleaner\CleanerTest;
+
+use Babymarkt\Composer\Cleaner\Command\CleanCommand;
 use Composer\Composer;
 use Composer\IO\IOInterface;
-use Composer\Plugin\Capability\CommandProvider;
-use Composer\Plugin\Capable;
-use Composer\Plugin\PluginInterface;
+use Composer\Plugin\Capability\CommandProvider as CommandProviderInterface;
 use Composer\Util\Filesystem;
 
-class CleanerPlugin implements PluginInterface, CommandProvider, Capable
+class CommandProvider implements CommandProviderInterface
 {
+
     /**
      * @var Composer
      */
@@ -62,14 +63,22 @@ class CleanerPlugin implements PluginInterface, CommandProvider, Capable
     );
 
     /**
-     * Activates the plugin.
-     * @param Composer $composer
-     * @param IOInterface $io
+     * CleanerCommandProvider constructor.
+     * @param array $args Possible keys are: composer, io, plugin
+     * @see \Composer\Plugin\PluginManager::getPluginCapability for arguments
      */
-    public function activate(Composer $composer, IOInterface $io)
+    public function __construct($args)
     {
-        $this->composer = $composer;
-        $this->io       = $io;
+        $this->composer = $args['composer'];
+        $this->io       = $args['io'];
+    }
+
+    public function getCommands()
+    {
+        $cleanerCommand = new CleanCommand();
+        $cleanerCommand->setCleaner($this->createCleanerInstance());
+
+        return array($cleanerCommand);
     }
 
     /**
@@ -84,38 +93,5 @@ class CleanerPlugin implements PluginInterface, CommandProvider, Capable
         );
 
         return new Cleaner(new Filesystem(), $config['cleaner']);
-    }
-
-    public function deactivate(Composer $composer, IOInterface $io)
-    {
-
-    }
-
-    public function uninstall(Composer $composer, IOInterface $io)
-    {
-
-    }
-
-    /**
-     * Returns a list of available commands.
-     * @return CleanerCommand[]|\Composer\Command\BaseCommand[]
-     */
-    public function getCommands()
-    {
-        $cleanerCommand = new CleanerCommand();
-        $cleanerCommand->setCleaner($this->createCleanerInstance());
-
-        return array($cleanerCommand);
-    }
-
-    /**
-     * Returns a list of capabilities.
-     * @return string[]
-     */
-    public function getCapabilities()
-    {
-        return array(
-            CommandProvider::class => self::class
-        );
     }
 }

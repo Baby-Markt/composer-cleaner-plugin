@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/composer-plugin-cleaner.iml" filepath="$PROJECT_DIR$/.idea/composer-plugin-cleaner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../composer-plugin-integration/.idea/composer-plugin-integration.iml" filepath="$PROJECT_DIR$/../composer-plugin-integration/.idea/composer-plugin-integration.iml" />
     </modules>
   </component>
 </project>

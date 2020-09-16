@@ -10,7 +10,7 @@
     }
   ],
   "extra": {
-    "class": "Babymarkt\\Composer\\Cleaner\\CleanerPlugin"
+    "class": "Babymarkt\\Composer\\Cleaner\\Plugin"
   },
   "config": {
     "platform": {
