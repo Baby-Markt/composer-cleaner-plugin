@@ -2,6 +2,7 @@
 
 namespace Babymarkt\Composer\Cleaner;
 
+use Cleaner\CleanerTest;
 use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Plugin\Capability\CommandProvider;
@@ -11,11 +12,6 @@ use Composer\Util\Filesystem;
 
 class CleanerPlugin implements PluginInterface, CommandProvider, Capable
 {
-    /**
-     * @var Cleaner
-     */
-    protected $cleaner;
-
     /**
      * @var Composer
      */
@@ -60,20 +56,26 @@ class CleanerPlugin implements PluginInterface, CommandProvider, Capable
                     'patchwork.json'
                 ),
                 // Pattern to be excluded from clean up
-                "exclude" => array(
-
-                )
+                "exclude" => array()
             )
         )
     );
 
+    /**
+     * Activates the plugin.
+     * @param Composer $composer
+     * @param IOInterface $io
+     */
     public function activate(Composer $composer, IOInterface $io)
     {
         $this->composer = $composer;
         $this->io       = $io;
-        $this->cleaner  = $this->createCleanerInstance();
     }
 
+    /**
+     * A Cleaner factory.
+     * @return Cleaner
+     */
     protected function createCleanerInstance()
     {
         $config = array_replace_recursive(
@@ -86,26 +88,34 @@ class CleanerPlugin implements PluginInterface, CommandProvider, Capable
 
     public function deactivate(Composer $composer, IOInterface $io)
     {
-        // TODO: Implement deactivate() method.
+
     }
 
     public function uninstall(Composer $composer, IOInterface $io)
     {
-        // TODO: Implement uninstall() method.
+
     }
 
+    /**
+     * Returns a list of available commands.
+     * @return CleanerCommand[]|\Composer\Command\BaseCommand[]
+     */
     public function getCommands()
     {
         $cleanerCommand = new CleanerCommand();
-        $cleanerCommand->setCleaner($this->cleaner);
+        $cleanerCommand->setCleaner($this->createCleanerInstance());
 
         return array($cleanerCommand);
     }
 
+    /**
+     * Returns a list of capabilities.
+     * @return string[]
+     */
     public function getCapabilities()
     {
         return array(
-            CommandProvider::class => CleanerPlugin::class
+            CommandProvider::class => self::class
         );
     }
 }
