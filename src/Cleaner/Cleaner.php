@@ -10,15 +10,25 @@ use Composer\Util\Filesystem;
  */
 class Cleaner
 {
+    const EVENT_PRE_REMOVE = 'preRemove';
+    const EVENT_REMOVE_SUCCESSFUL = 'successful';
+    const EVENT_REMOVE_FAILED = 'failed';
+
     /**
      * @var Filesystem
      */
     protected $filesystem;
 
     /**
-     * @var array
+     * @var array|Context[]
      */
-    protected $config;
+    protected $contexts;
+
+    /**
+     * Current context.
+     * @var Context
+     */
+    protected $current;
 
     /**
      * @var int
@@ -26,32 +36,45 @@ class Cleaner
     protected $cleanCounter = 0;
 
     /**
+     * @var callable[]
+     */
+    protected $callbacks = [];
+
+    /**
      * Cleaner constructor.
      * @param Filesystem $filesystem
-     * @param array $config
+     * @param array|Context[] $contexts
      */
-    public function __construct(Filesystem $filesystem, array $config)
+    public function __construct(Filesystem $filesystem, array $contexts)
     {
         $this->filesystem = $filesystem;
-        $this->config     = $config;
+
+        $this->contexts = array();
+        foreach ($contexts as $context) {
+            $this->contexts[strtolower($context->getName())] = $context;
+        }
     }
 
     /**
-     * @param $basePath
-     * @param $context
+     * @param string $contextName
      */
-    public function run($basePath, $context)
+    public function run($contextName)
     {
-        $this->basePath = $basePath;
-
-        if (!isset($this->config[$context])) {
+        $contextName = strtolower($contextName);
+        if (!isset($this->contexts[$contextName])) {
             throw new \InvalidArgumentException(
-                sprintf('Clean context "%s" not defined. Found: %s', $context, implode(', ', array_keys($this->config)))
+                sprintf('Cleaner context "%s" not defined. Do you mean: %s', $contextName, implode(', ', array_keys($this->contexts)))
             );
         }
 
-        foreach ($this->config[$context] as $globPattern) {
-            $this->remove($globPattern);
+        $this->current = $this->contexts[$contextName];
+
+        $paths = $this->getNormalizedPaths($contextName);
+
+        foreach ($this->contexts[$contextName]->getPattern() as $globPattern) {
+            foreach ($paths as $path) {
+                $this->remove($path . DIRECTORY_SEPARATOR . $globPattern);
+            }
         }
     }
 
@@ -63,19 +86,92 @@ class Cleaner
     {
         $matches = glob($pattern);
         foreach ($matches as $path) {
-            if (is_dir($path)) {
-                $this->remove($path . DIRECTORY_SEPARATOR . '*');
-                echo "DELETE DIRECTORY: " . $path . PHP_EOL;
-                if (rmdir($path)) {
-                    $this->cleanCounter++;
-                }
-            } else {
-                echo "DELETE FILE " . $path . PHP_EOL;
-                if (unlink($path)) {
-                    $this->cleanCounter++;
+            if (!$this->isExcluded($path)) {
+                if ($this->triggerCallbacks($path, self::EVENT_PRE_REMOVE)) {
+                    if ($this->filesystem->remove($path)) {
+                        $this->triggerCallbacks($path, self::EVENT_REMOVE_SUCCESSFUL);
+                    } else {
+                        $this->triggerCallbacks($path, self::EVENT_REMOVE_FAILED);
+                    }
                 }
             }
         }
     }
 
+    /**
+     * @param $path
+     * @return bool
+     */
+    protected function isExcluded($path)
+    {
+        foreach ($this->current->getExclude() as $pattern) {
+            if (preg_match('#' . $pattern . '#is', $path)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the normalized paths from context.
+     */
+    protected function getNormalizedPaths()
+    {
+        $paths = count($this->current->getPaths())
+            ? $this->current->getPaths()
+            : array('.');
+
+        foreach ($paths as &$path) {
+            $path = $this->filesystem->normalizePath($path);
+
+            if (strpos($path, DIRECTORY_SEPARATOR) === 0) {
+                // Make path relative.
+                $path = '.' . $path;
+            }
+        }
+
+        return $paths;
+    }
+
+    /**
+     * Registers a new callback.
+     * @param $callback
+     * @return $this
+     */
+    public function registerCallback($callback)
+    {
+        $this->callbacks[] = $callback;
+        return $this;
+    }
+
+    /**
+     * Triggers the event callbacks.
+     * @param $file
+     * @param $event
+     * @return bool
+     */
+    protected function triggerCallbacks($file, $event)
+    {
+        foreach ($this->callbacks as $callback) {
+            if (!call_user_func($callback, $file, $event, $this)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if a given context name exists.
+     * @param $contextName
+     * @return bool
+     */
+    protected function contextExists($contextName)
+    {
+        foreach ($this->contexts as $context) {
+            if ($context->getName() === $contextName) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

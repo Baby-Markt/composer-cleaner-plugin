@@ -1,8 +1,6 @@
 <?php
 
-namespace Cleaner;
-
-use Babymarkt\Composer\Cleaner\Plugin;
+namespace Babymarkt\Composer\Cleaner;
 
 class CleanerPluginTest extends \PHPUnit_Framework_TestCase
 {

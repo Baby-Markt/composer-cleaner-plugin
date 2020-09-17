@@ -4,34 +4,33 @@
 namespace Babymarkt\Composer\Cleaner\Command;
 
 
-use Babymarkt\Composer\Cleaner\Cleaner;
-use Composer\Command\BaseCommand;
+use Babymarkt\Composer\Cleaner\AbstractCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CleanCommand extends BaseCommand
+/**
+ *
+ */
+class CleanCommand extends AbstractCommand
 {
-
-    /**
-     * @var Cleaner
-     */
-    protected $cleaner;
-
-    /**
-     * @param Cleaner $cleaner
-     */
-    public function setCleaner($cleaner)
-    {
-        $this->cleaner = $cleaner;
-    }
 
     protected function configure()
     {
         $this->setName('babymarkt:cleaner:clean');
+        $this->addArgument('context', InputArgument::OPTIONAL,
+            'Defines the context to use to clean up files. If no context is given, all contexts are used.'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $cleaner = $this->getCleaner();
+        $cleaner->registerCallback(function ($file, $event) use ($output) {
+            $output->writeln('- Removing ' . $file);
+        });
+        $cleaner->run($input->getArgument('context'));
+
         $output->writeln('Cleaned up');
     }
 
