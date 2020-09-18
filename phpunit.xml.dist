@@ -7,15 +7,13 @@
         </testsuite>
     </testsuites>
 
-    <!--filter>
+    <filter>
         <whitelist>
             <directory suffix=".php">.</directory>
             <exclude>
-                <directory>Resources</directory>
                 <directory>Tests</directory>
-                <directory>Entity</directory>
                 <directory>vendor</directory>
             </exclude>
         </whitelist>
-    </filter-->
+    </filter>
 </phpunit>

@@ -48,11 +48,8 @@ class Cleaner
     public function __construct(Filesystem $filesystem, array $contexts)
     {
         $this->filesystem = $filesystem;
+        $this->setContexts($contexts);
 
-        $this->contexts = array();
-        foreach ($contexts as $context) {
-            $this->contexts[strtolower($context->getName())] = $context;
-        }
     }
 
     /**
@@ -153,7 +150,7 @@ class Cleaner
     protected function triggerCallbacks($file, $event)
     {
         foreach ($this->callbacks as $callback) {
-            if (!call_user_func($callback, $file, $event, $this)) {
+            if (call_user_func($callback, $file, $event, $this) === false) {
                 return false;
             }
         }
@@ -161,17 +158,15 @@ class Cleaner
     }
 
     /**
-     * Checks if a given context name exists.
-     * @param $contextName
-     * @return bool
+     * @param array|Context[] $contexts
      */
-    protected function contextExists($contextName)
+    public function setContexts(array $contexts)
     {
-        foreach ($this->contexts as $context) {
-            if ($context->getName() === $contextName) {
-                return true;
-            }
+        $this->contexts = array();
+        foreach ($contexts as $context) {
+            $this->contexts[strtolower($context->getName())] = $context;
         }
-        return false;
+        return $this;
     }
+
 }
