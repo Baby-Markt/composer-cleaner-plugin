@@ -4,14 +4,13 @@ namespace Babymarkt\Composer\Cleaner;
 
 /**
  * Global function glob mock
- * @param $pattern
- * @param null $flags
+ * @see \glob()
  */
 function glob($pattern, $flags = null)
 {
     return CleanerTest::$globCallback !== null
         ? call_user_func(CleanerTest::$globCallback, $pattern, $flags)
-        : glob($pattern, $flags);
+        : \glob($pattern, $flags);
 }
 
 class CleanerTest extends \PHPUnit_Framework_TestCase

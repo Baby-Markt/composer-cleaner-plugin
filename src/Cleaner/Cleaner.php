@@ -66,7 +66,7 @@ class Cleaner
 
         $this->current = $this->contexts[$contextName];
 
-        $paths = $this->getNormalizedPaths($contextName);
+        $paths = $this->getNormalizedPaths();
 
         foreach ($this->contexts[$contextName]->getPattern() as $globPattern) {
             foreach ($paths as $path) {
@@ -77,7 +77,7 @@ class Cleaner
 
     /**
      * Removes all files an directories recursively.
-     * @param $pattern
+     * @param string $pattern
      */
     protected function remove($pattern)
     {
@@ -96,7 +96,7 @@ class Cleaner
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @return bool
      */
     protected function isExcluded($path)
@@ -132,7 +132,7 @@ class Cleaner
 
     /**
      * Registers a new callback.
-     * @param $callback
+     * @param callable $callback
      * @return $this
      */
     public function registerCallback($callback)
@@ -143,8 +143,8 @@ class Cleaner
 
     /**
      * Triggers the event callbacks.
-     * @param $file
-     * @param $event
+     * @param string $file
+     * @param string $event
      * @return bool
      */
     protected function triggerCallbacks($file, $event)

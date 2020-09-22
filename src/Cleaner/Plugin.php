@@ -24,6 +24,7 @@ class Plugin implements PluginInterface, Capable
      * Activates the plugin.
      * @param Composer $composer
      * @param IOInterface $io
+     * @codeCoverageIgnore
      */
     public function activate(Composer $composer, IOInterface $io)
     {
@@ -31,11 +32,21 @@ class Plugin implements PluginInterface, Capable
         $this->io       = $io;
     }
 
+    /**
+     * @param Composer $composer
+     * @param IOInterface $io
+     * @codeCoverageIgnore
+     */
     public function deactivate(Composer $composer, IOInterface $io)
     {
 
     }
 
+    /**
+     * @param Composer $composer
+     * @param IOInterface $io
+     * @codeCoverageIgnore
+     */
     public function uninstall(Composer $composer, IOInterface $io)
     {
 

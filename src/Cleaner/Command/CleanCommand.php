@@ -19,7 +19,7 @@ class CleanCommand extends AbstractCommand
     {
         $this->setName('babymarkt:cleaner:clean');
         $this->addArgument('context', InputArgument::OPTIONAL,
-            'Defines the context to use to clean up files. If no context is given, all contexts are used.'
+            'Defines the context to use to clean up files. If no context is given, all contexts are executed.'
         );
     }
 
@@ -32,6 +32,8 @@ class CleanCommand extends AbstractCommand
         $cleaner->run($input->getArgument('context'));
 
         $output->writeln('Cleaned up');
+
+        return 0;
     }
 
 }
