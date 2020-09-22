@@ -24,7 +24,6 @@
   "require-dev": {
     "phpunit/phpunit": "*",
     "mikey179/vfsstream": "~1",
-    "composer/composer": "^1.10",
-    "phpstan/phpstan": "^0.12.42"
+    "composer/composer": "^1.10"
   }
 }
