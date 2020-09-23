@@ -1,5 +1,5 @@
 # composer-plugin-cleaner
-[![Build Status](https://travis-ci.org/Baby-Markt/composer-plugin-cleaner.svg?branch=master)](https://travis-ci.org/Baby-Markt/composer-plugin-cleaner)
+[![Build Status](https://travis-ci.org/Baby-Markt/composer-plugin-cleaner.svg?branch=master)](https://travis-ci.org/Baby-Markt/composer-plugin-cleaner) [![version](https://img.shields.io/packagist/v/babymarkt/composer-cleaner-plugin.svg?style=flat)](https://packagist.org/packages/babymarkt/composer-cleaner-plugin) ![GitHub](https://img.shields.io/github/license/baby-markt/composer-cleaner-plugin) ![GitHub All Releases](https://img.shields.io/github/downloads/baby-markt/composer-cleaner-plugin/total)
 
 * [Install](#install)
 * [Configure](#configure)
