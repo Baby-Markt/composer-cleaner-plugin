@@ -1,17 +1,8 @@
 <?php
 
 namespace Babymarkt\Composer\Cleaner;
-
-/**
- * Global function glob mock
- * @see \glob()
- */
-function glob($pattern, $flags = null)
-{
-    return CleanerTest::$globCallback !== null
-        ? call_user_func(CleanerTest::$globCallback, $pattern, $flags)
-        : \glob($pattern, $flags);
-}
+echo getcwd();
+require_once './tests/fixtures/function.glob.php';
 
 class CleanerTest extends \PHPUnit_Framework_TestCase
 {
@@ -40,7 +31,7 @@ class CleanerTest extends \PHPUnit_Framework_TestCase
 
     protected function tearDown()
     {
-        self::$globCallback = null;
+        GlobTester::$callback = null;
     }
 
     public function testCallbackWithPositivResult()
@@ -49,7 +40,7 @@ class CleanerTest extends \PHPUnit_Framework_TestCase
             ->setMethods(array('trigger'))
             ->getMock();
 
-        self::$globCallback = function () {
+        GlobTester::$callback = function () {
             return array('file-to-delete');
         };
 
@@ -68,7 +59,7 @@ class CleanerTest extends \PHPUnit_Framework_TestCase
             ->setMethods(array('trigger'))
             ->getMock();
 
-        self::$globCallback = function () {
+        GlobTester::$callback = function () {
             return array('file-to-delete');
         };
 
@@ -89,7 +80,7 @@ class CleanerTest extends \PHPUnit_Framework_TestCase
         $mock->expects($this->never())
             ->method('trigger');
 
-        self::$globCallback = function () {
+        GlobTester::$callback = function () {
             return array('important/file-to-delete');
         };
 
@@ -105,7 +96,7 @@ class CleanerTest extends \PHPUnit_Framework_TestCase
         $absolutePath = '/etc';
         $relativePath = './etc';
 
-        self::$globCallback = function ($pattern) use ($relativePath) {
+        GlobTester::$callback = function ($pattern) use ($relativePath) {
             $this->assertEquals($relativePath . '/*', $pattern);
             return array();
         };
@@ -120,6 +111,29 @@ class CleanerTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->cleaner->run('lsdhvslkdfh');
+    }
+
+    public function testDryRun() {
+        /** @var \PHPUnit_Framework_MockObject_MockObject|\Composer\Util\Filesystem $fileSystem */
+        $fileSystem = $this->getMockBuilder(\Composer\Util\Filesystem::class)
+            ->disableOriginalConstructor()
+            ->setMethods(array('normalizePath', 'remove'))
+            ->getMock();
+
+        $fileSystem->method('normalizePath')->willReturnArgument(0);
+
+        // This method is not expected to be called because of the enabled dry-mode.
+        $fileSystem->expects($this->never())->method('remove');
+
+        GlobTester::$callback = function () {
+            return array('file-to-delete');
+        };
+
+        $this->cleaner = new Cleaner($fileSystem, array(
+            new Context(array('pattern' => '*'), 'test')
+        ));
+        $this->cleaner->setDryRun(true);
+        $this->cleaner->run('test');
     }
 
     /**
@@ -141,7 +155,7 @@ class CleanerTest extends \PHPUnit_Framework_TestCase
             $capturedEvents[] = $event;
         };
 
-        self::$globCallback = function () {
+        GlobTester::$callback = function () {
             return array('file-to-delete');
         };
 

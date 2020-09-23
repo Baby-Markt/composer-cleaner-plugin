@@ -1,7 +1,14 @@
 {
   "name": "babymarkt/composer-cleaner-plugin",
-  "description": "A composer plugin to clean up your project directory",
   "type": "composer-plugin",
+  "description": "A composer plugin to clean up your project directory",
+  "keywords": [
+    "composer",
+    "plugin",
+    "directories",
+    "files",
+    "cleanup"
+  ],
   "license": "MIT",
   "authors": [
     {
@@ -29,6 +36,7 @@
   "require-dev": {
     "phpunit/phpunit": "*",
     "mikey179/vfsstream": "~1",
-    "composer/composer": "^1.10"
+    "composer/composer": "^1.10",
+    "symfony/framework-bundle": "*"
   }
 }

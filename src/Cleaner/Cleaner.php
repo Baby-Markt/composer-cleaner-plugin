@@ -41,6 +41,11 @@ class Cleaner
     protected $callbacks = [];
 
     /**
+     * @var bool
+     */
+    protected $dryRun = false;
+
+    /**
      * Cleaner constructor.
      * @param Filesystem $filesystem
      * @param array|Context[] $contexts
@@ -85,7 +90,7 @@ class Cleaner
         foreach ($matches as $path) {
             if (!$this->isExcluded($path)) {
                 if ($this->triggerCallbacks($path, self::EVENT_PRE_REMOVE)) {
-                    if ($this->filesystem->remove($path)) {
+                    if ($this->dryRun || $this->filesystem->remove($path)) {
                         $this->triggerCallbacks($path, self::EVENT_REMOVE_SUCCESSFUL);
                     } else {
                         $this->triggerCallbacks($path, self::EVENT_REMOVE_FAILED);
@@ -169,4 +174,13 @@ class Cleaner
         return $this;
     }
 
+    /**
+     * @param bool $enabled
+     * @return Cleaner
+     */
+    public function setDryRun($enabled = true)
+    {
+        $this->dryRun = (bool)$enabled;
+        return $this;
+    }
 }

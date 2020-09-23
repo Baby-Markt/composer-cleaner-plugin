@@ -62,7 +62,7 @@ abstract class AbstractCommand extends BaseCommand
      * A Cleaner factory.
      * @return Cleaner
      */
-    protected function getCleaner()
+    public function getCleaner()
     {
         if ($this->cleaner === null) {
             $config = array_replace_recursive(
@@ -77,6 +77,16 @@ abstract class AbstractCommand extends BaseCommand
         }
 
         return $this->cleaner;
+    }
+
+    /**
+     * Sets the cleaner instance.
+     * @param Cleaner $cleaner
+     */
+    public function setCleaner(Cleaner $cleaner)
+    {
+        $this->cleaner = $cleaner;
+        return $this;
     }
 
     /**
