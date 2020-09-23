@@ -1,5 +1,5 @@
-# composer-plugin-cleaner
-[![Build Status](https://travis-ci.org/Baby-Markt/composer-plugin-cleaner.svg?branch=master)](https://travis-ci.org/Baby-Markt/composer-plugin-cleaner) [![version](https://img.shields.io/packagist/v/babymarkt/composer-cleaner-plugin.svg?style=flat)](https://packagist.org/packages/babymarkt/composer-cleaner-plugin) ![GitHub](https://img.shields.io/github/license/baby-markt/composer-cleaner-plugin) ![GitHub All Releases](https://img.shields.io/github/downloads/baby-markt/composer-cleaner-plugin/total)
+# composer-cleaner-plugin
+[![Build Status](https://travis-ci.org/Baby-Markt/composer-cleaner-plugin.svg?branch=master)](https://travis-ci.org/Baby-Markt/composer-cleaner-plugin) ![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/babymarkt/composer-cleaner-plugin) [![version](https://img.shields.io/packagist/v/babymarkt/composer-cleaner-plugin?style=flat)](https://packagist.org/packages/babymarkt/composer-cleaner-plugin) ![GitHub](https://img.shields.io/github/license/Baby-Markt/composer-cleaner-plugin) ![GitHub All Releases](https://img.shields.io/github/downloads/Baby-Markt/composer-cleaner-plugin/total) 
 
 * [Install](#install)
 * [Configure](#configure)
