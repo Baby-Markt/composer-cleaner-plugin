@@ -17,7 +17,6 @@ The configuration must be placed in the `extra` section in `composer.json`. An e
 {
   "name": "company/your-project",
   "type": "project",
-  (...)
   "extra": {
     "babymarkt:cleaner": {
       "context-name": {
@@ -58,7 +57,7 @@ which can be used on terminal to select the configuration.
   "extra": {
     "babymarkt:cleaner": {
       "context-name": {
-        //...
+        "your cleaner options": "..."
       }
     }
   }
@@ -124,8 +123,8 @@ character is the `#`. If you need to use it in you pattern, you must escape it.
           "data/*"
         ],
         "exclude": [
-          ".*\.important"
-        ],
+          ".*\\.important"
+        ]
       }
     }
   }
