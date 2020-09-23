@@ -1,8 +1,8 @@
 {
   "name": "babymarkt/composer-cleaner-plugin",
+  "description": "A composer plugin to clean up your project directory",
   "type": "composer-plugin",
   "license": "MIT",
-  "version": "1.0.0",
   "authors": [
     {
       "name": "Niklas Funke",
